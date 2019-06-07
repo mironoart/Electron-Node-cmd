@@ -15,7 +15,7 @@
  *                don't mine while the connection is lost, so your computer's power usage goes down to idle.
  */
 "call_timeout" : 10,
-"retry_time" : 30,
+"retry_time" : 3,
 "giveup_limit" : 0,
 
 /*
@@ -34,7 +34,7 @@
  *
  * print_motd    - Display messages from your pool operator in the hashrate result.
  */
-"verbose_level" : 4,
+"verbose_level" : 10,
 "print_motd" : true,
 
 /*

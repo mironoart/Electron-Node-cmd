@@ -1,19 +1,44 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Hello World!</title>
   </head>
   <body>
-    <h1>Hello World!</h1>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
-
+    <h1>Miner</h1>
+    <button onClick="main()">Start Mining</button>
+    <div id="consoleData"></div>
     <script>
       // You can also require other files to run in this process
-      require('./renderer.js')
+      const { app } = require("electron").remote;
+      const util = require("util");
+      const spawn = require("child_process").spawn;
+      const path = require("path");
+
+      console.log(app.getPath("exe"));
+
+      function main() {
+        const out = spawn("./xmr-stak", {
+          cwd: "/home/codecare/Desktop/workSpace/pirate-coin/shel/miner", //          cwd: "/home/codecare/Desktop/workSpace/pirate-coin/shel/dist/miner",
+          shell: true
+        });
+        console.log(out);
+        out.stdout.on("data", function(data) {
+          document
+            .getElementById("consoleData")
+            .appendChild(document.createTextNode(data + "\t "));
+
+          console.log("stdout: " + data.toString());
+        });
+
+        out.stderr.on("data", function(data) {
+          console.log("stderr: " + data.toString());
+        });
+
+        out.on("exit", function(code) {
+          console.log("child process exited with code " + code.toString());
+        });
+      }
     </script>
   </body>
 </html>
