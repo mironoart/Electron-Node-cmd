@@ -15,7 +15,7 @@
  *                don't mine while the connection is lost, so your computer's power usage goes down to idle.
  */
 "call_timeout" : 10,
-"retry_time" : 3,
+"retry_time" : 30,
 "giveup_limit" : 0,
 
 /*
@@ -34,7 +34,7 @@
  *
  * print_motd    - Display messages from your pool operator in the hashrate result.
  */
-"verbose_level" : 10,
+"verbose_level" : 4,
 "print_motd" : true,
 
 /*
@@ -43,7 +43,7 @@
  * h_print_time - How often, in seconds, should we print a hashrate report if verbose_level is set to 4.
  *                This option has no effect if verbose_level is not 4.
  */
-"h_print_time" : 300,
+"h_print_time" : 50,
 
 /*
  * Manual hardware AES override
@@ -124,7 +124,7 @@
  *
  * httpd_port - Port we should listen on. Default, 0, will switch off the server.
  */
-"httpd_port" : 0,
+"httpd_port" : 2019,
 
 /*
  * HTTP Authentication

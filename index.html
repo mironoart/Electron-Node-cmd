@@ -1,44 +1,86 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Hello World!</title>
-  </head>
-  <body>
-    <h1>Miner</h1>
-    <button onClick="main()">Start Mining</button>
-    <div id="consoleData"></div>
-    <script>
-      // You can also require other files to run in this process
-      const { app } = require("electron").remote;
-      const util = require("util");
-      const spawn = require("child_process").spawn;
-      const path = require("path");
 
-      console.log(app.getPath("exe"));
+<head>
+  <meta charset="UTF-8" />
+  <title>Hello World!</title>
+</head>
 
-      function main() {
-        const out = spawn("./xmr-stak", {
-          cwd: "/home/codecare/Desktop/workSpace/pirate-coin/shel/miner", //          cwd: "/home/codecare/Desktop/workSpace/pirate-coin/shel/dist/miner",
-          shell: true
-        });
-        console.log(out);
-        out.stdout.on("data", function(data) {
-          document
-            .getElementById("consoleData")
-            .appendChild(document.createTextNode(data + "\t "));
+<body>
+  <h1>Miner</h1>
+  <button onClick="main()">Start Mining</button>
+  <button id='stats'>Stop</button>
+  <h6> Hashes per Second</h6>
+  <div id="hashesPerSecond"></div>
+  <h6> Total Hashes</h6>
+  <div id="totalHashes"></div>
+  <script>
+    // You can also require other files to run in this process
+    const { app } = require("electron").remote;
+    const util = require("util");
+    const spawn = require("child_process").spawn;
+    const path = require("path");
+    let stringStreamCreator = require('string-to-stream');
 
-          console.log("stdout: " + data.toString());
-        });
 
-        out.stderr.on("data", function(data) {
-          console.log("stderr: " + data.toString());
-        });
 
-        out.on("exit", function(code) {
-          console.log("child process exited with code " + code.toString());
-        });
-      }
-    </script>
-  </body>
+
+
+
+
+
+    function main() {
+      var totalHashes = 0
+
+      const child = spawn("./xmr-stak", {
+        cwd: "/home/codecare/Desktop/workSpace/pirate-coin/shel/miner", //          cwd: "/home/codecare/Desktop/workSpace/pirate-coin/shel/dist/miner",
+        shell: true
+      });
+
+      setInterval(function () {
+        stringStreamCreator("h\n").pipe(child.stdin, { end: false })
+      }, 1000)
+
+
+      child.stdout.on("data", function (data) {
+
+
+        var hashesPerSecondPlaseholder = document.getElementById("hashesPerSecond")
+        var totalHashesPlaseholder = document.getElementById("totalHashes")
+
+
+        let dataToString = data.toString().split(' ')
+        console.log(dataToString)
+
+
+        let hashPerSecond = Number(dataToString[72]).toFixed()
+        if (hashPerSecond !== 'NaN' && hashPerSecond !== '0') {
+          console.log(hashPerSecond)
+          hashesPerSecondPlaseholder.innerText = hashPerSecond;
+          totalHashes += Number(hashPerSecond)
+        } else {
+          console.log("Calculating...")
+          hashesPerSecondPlaseholder.innerText = "Calculating...";
+        }
+
+        totalHashesPlaseholder.innerText = totalHashes
+
+
+      });
+
+      child.stderr.on("data", function (data) {
+        console.log("stderr: " + data.toString());
+      });
+
+
+      child.on("exit", function (code) {
+        console.log("child process exited with code " + code.toString());
+      });
+    }
+
+
+
+  </script>
+</body>
+
 </html>
